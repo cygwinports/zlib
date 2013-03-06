@@ -1,0 +1,67 @@
+NAME="zlib"
+VERSION=1.2.7
+RELEASE=1
+CATEGORY="Libs"
+SUMMARY="gzip de/compression library"
+DESCRIPTION="zlib is designed to be a free, general-purpose, legally
+unencumbered -- that is, not covered by any patents -- lossless data-
+compression library for use on virtually any computer hardware and operating
+system. The zlib data format is itself portable across platforms."
+HOMEPAGE="http://www.zlib.net/"
+SRC_URI="mirror://sourceforge/libpng/zlib-${VERSION}.tar.gz"
+PATCH_URI="
+	1.2.7-minizip-cygwin.patch
+	1.2.7-zlib-symbols.patch
+"
+
+PKG_NAMES="zlib zlib0 zlib-devel libminizip1 libminizip-devel"
+zlib_SUMMARY="${SUMMARY} (documentation)"
+zlib_REQUIRES="zlib0"
+zlib_CONTENTS="usr/share/doc/ usr/share/man/"
+zlib0_SUMMARY="${SUMMARY} (runtime)"
+zlib0_CONTENTS="usr/bin/cygz.dll"
+zlib_devel_SUMMARY="${SUMMARY} (development)"
+zlib_devel_CONTENTS="usr/include/z*.h usr/lib/libz.* usr/lib/pkgconfig/zlib.pc"
+libminizip1_SUMMARY="Zip file de/compression library (runtime)"
+libminizip1_CONTENTS="usr/bin/cygminizip-1.dll"
+libminizip_devel_SUMMARY="Zip file de/compression library (development)"
+libminizip_devel_CONTENTS="usr/include/minizip/ usr/lib/libminizip.* usr/lib/pkgconfig/minizip.pc"
+
+DISTCLEANFILES="contrib/minizip/Makefile"
+
+src_compile() {
+	cd ${S}/contrib/minizip
+	cygautoreconf
+	lndirs
+	rm -fr ${B}/contrib/minizip/*
+
+	cd ${B}
+	cygmake -j1 -f win32/Makefile.gcc \
+		CC=${CC} AR=${AR} RC=${RC} STRIP=: \
+		CFLAGS="${CFLAGS}" \
+		SHAREDLIB=cygz.dll IMPLIB=libz.dll.a
+
+	cd ${B}/contrib/minizip
+	cygconf
+	cygmake
+}
+
+src_install() {
+	cd ${B}
+	cyginstall -f win32/Makefile.gcc \
+		SHAREDLIB=cygz.dll IMPLIB=libz.dll.a \
+		SHARED_MODE=1 \
+		prefix=/usr \
+		BINARY_PATH=/usr/bin \
+		INCLUDE_PATH=/usr/include \
+		LIBRARY_PATH=/usr/lib
+
+	doman ${S}/zlib.3
+
+	cd ${B}/contrib/minizip
+	cyginstall
+
+	dodoc ${S}/contrib/minizip/*.txt
+}
+
+KEEP_LA_FILES="none"
