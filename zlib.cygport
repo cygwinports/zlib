@@ -1,6 +1,6 @@
 NAME="zlib"
 VERSION=1.2.8
-RELEASE=1
+RELEASE=2
 CATEGORY="Libs"
 SUMMARY="gzip de/compression library"
 DESCRIPTION="zlib is designed to be a free, general-purpose, legally
@@ -10,6 +10,9 @@ system. The zlib data format is itself portable across platforms."
 HOMEPAGE="http://www.zlib.net/"
 SRC_URI="mirror://sourceforge/libpng/zlib-${VERSION}.tar.gz"
 PATCH_URI="
+	http://pkgs.fedoraproject.org/cgit/zlib.git/plain/zlib-1.2.5-minizip-fixuncrypt.patch
+	http://pkgs.fedoraproject.org/cgit/zlib.git/plain/zlib-1.2.7-z-block-flush.patch
+	http://pkgs.fedoraproject.org/cgit/zlib.git/plain/zlib-1.2.8-minizip-include.patch
 	1.2.7-minizip-cygwin.patch
 	1.2.7-zlib-symbols.patch
 "
@@ -55,6 +58,9 @@ src_install() {
 		BINARY_PATH=/usr/bin \
 		INCLUDE_PATH=/usr/include \
 		LIBRARY_PATH=/usr/lib
+
+	# pkg-config doesn't manage to skip this extra -L/usr/lib
+	sed -i -e 's| -L\${sharedlibdir} | |g' ${D}/usr/lib/pkgconfig/zlib.pc
 
 	doman ${S}/zlib.3
 
