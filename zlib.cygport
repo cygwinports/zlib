@@ -1,6 +1,6 @@
 NAME="zlib"
 VERSION=1.2.8
-RELEASE=2
+RELEASE=3
 CATEGORY="Libs"
 SUMMARY="gzip de/compression library"
 DESCRIPTION="zlib is designed to be a free, general-purpose, legally
@@ -37,8 +37,10 @@ src_compile() {
 	cygautoreconf
 	lndirs
 	rm -fr ${B}/contrib/minizip/*
+	rm -f ${B}/Makefile ${B}/zconf.h
 
 	cd ${B}
+	./configure
 	cygmake -j1 -f win32/Makefile.gcc \
 		CC=${CC} AR=${AR} RC=${RC} STRIP=: \
 		CFLAGS="${CFLAGS}" \
