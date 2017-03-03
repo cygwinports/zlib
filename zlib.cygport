@@ -1,6 +1,6 @@
 NAME="zlib"
-VERSION=1.2.8
-RELEASE=3
+VERSION=1.2.11
+RELEASE=1
 CATEGORY="Libs"
 SUMMARY="gzip de/compression library"
 DESCRIPTION="zlib is designed to be a free, general-purpose, legally
@@ -11,10 +11,8 @@ HOMEPAGE="http://www.zlib.net/"
 SRC_URI="mirror://sourceforge/libpng/zlib-${VERSION}.tar.gz"
 PATCH_URI="
 	http://pkgs.fedoraproject.org/cgit/zlib.git/plain/zlib-1.2.5-minizip-fixuncrypt.patch
-	http://pkgs.fedoraproject.org/cgit/zlib.git/plain/zlib-1.2.7-z-block-flush.patch
-	http://pkgs.fedoraproject.org/cgit/zlib.git/plain/zlib-1.2.8-minizip-include.patch
 	1.2.7-minizip-cygwin.patch
-	1.2.7-zlib-symbols.patch
+	1.2.11-gzopen_w.patch
 "
 
 PKG_NAMES="zlib zlib0 zlib-devel libminizip1 libminizip-devel"
